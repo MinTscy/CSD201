@@ -1,0 +1,16 @@
+# ROOM|id|name|description|isExit|hasTreasure|monsterId
+ROOM|1|Entrance Hall|The first room of the dungeon.|false|false|-1
+ROOM|2|Guard Post|A room guarded by a weak monster.|false|false|101
+ROOM|3|Crystal Chamber|A glowing room with hidden treasure.|false|true|102
+ROOM|4|Forked Tunnel|A narrow tunnel with two directions.|false|false|-1
+ROOM|5|Ancient Gate|A heavy door leading outside.|true|false|103
+ROOM|6|Hidden Vault|A deep chamber beyond a costly path.|false|true|-1
+
+# EDGE|fromRoomId|toRoomId|weight
+EDGE|1|2|1
+EDGE|1|4|1
+EDGE|2|3|1
+EDGE|3|5|1
+EDGE|4|5|2
+EDGE|4|6|5
+EDGE|3|6|1

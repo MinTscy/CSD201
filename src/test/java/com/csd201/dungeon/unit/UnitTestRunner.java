@@ -5,8 +5,17 @@ public final class UnitTestRunner {
         int passed = 0;
         int failed = 0;
 
-        failed += runSuite("InventoryListUnitTest", () -> InventoryListUnitTest.runAll()) ? 0 : 1;
-        passed += (failed == 0) ? 1 : 0; // only one suite for now
+        if (runSuite("InventoryListUnitTest", InventoryListUnitTest::runAll)) {
+            passed++;
+        } else {
+            failed++;
+        }
+
+        if (runSuite("DungeonGraphUnitTest", DungeonGraphUnitTest::runAll)) {
+            passed++;
+        } else {
+            failed++;
+        }
 
         System.out.println();
         System.out.println("Unit test suites passed: " + passed);
