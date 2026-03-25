@@ -1,6 +1,7 @@
 param(
   [ValidateSet("unit", "manual", "main")]
-  [string]$target = "unit"
+  [string]$target = "unit",
+  [int]$port = 8080
 )
 
 $ErrorActionPreference = "Stop"
@@ -8,30 +9,22 @@ $ErrorActionPreference = "Stop"
 $projRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $projRoot
 
-$mainOut = "build/classes/main"
-$testOut = "build/classes/test"
+$mvn = Join-Path $projRoot ".tools\apache-maven-3.9.9\bin\mvn.cmd"
+if (-not (Test-Path $mvn)) { throw "Maven not found at $mvn" }
 
-New-Item -ItemType Directory -Force -Path $mainOut, $testOut | Out-Null
-
-Write-Host "Compiling (Java 17)..." -ForegroundColor Cyan
-
-$mainSources = Get-ChildItem -Recurse -Filter *.java "src/main/java" | ForEach-Object { $_.FullName }
-if (-not $mainSources -or $mainSources.Count -eq 0) { throw "No main Java sources found under src/main/java" }
-javac --release 17 -d $mainOut $mainSources
-
-$testSources = Get-ChildItem -Recurse -Filter *.java "src/test/java" | ForEach-Object { $_.FullName }
-if ($testSources -and $testSources.Count -gt 0) {
-  javac --release 17 -cp $mainOut -d $testOut $testSources
+switch ($target) {
+  "unit" {
+    Write-Host "Running JUnit test suite via Maven..." -ForegroundColor Green
+    & $mvn test
+  }
+  "manual" {
+    Write-Host "Compiling (skipping tests)..." -ForegroundColor Cyan
+    & $mvn -q -DskipTests compile
+    Write-Host "Running InventoryListManualTest..." -ForegroundColor Green
+    java -cp "target/test-classes;target/classes" com.csd201.dungeon.InventoryListManualTest
+  }
+  "main" {
+    Write-Host "Starting Main (web UI) on port $port..." -ForegroundColor Green
+    & $mvn "-Dexec.args=$port" exec:java
+  }
 }
-
-if ($target -eq "main") {
-  Write-Host "Running Main..." -ForegroundColor Green
-  java -cp "$mainOut" com.csd201.dungeon.Main
-} elseif ($target -eq "manual") {
-  Write-Host "Running InventoryListManualTest..." -ForegroundColor Green
-  java -cp "$testOut;$mainOut" com.csd201.dungeon.InventoryListManualTest
-} else {
-  Write-Host "Running unit tests..." -ForegroundColor Green
-  java -ea -cp "$testOut;$mainOut" com.csd201.dungeon.unit.UnitTestRunner
-}
-

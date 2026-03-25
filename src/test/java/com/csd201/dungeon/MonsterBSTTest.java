@@ -1,10 +1,13 @@
 package com.csd201.dungeon;
 
-import com.csd201.dungeon.ds.bst.MonsterBST;
-import com.csd201.dungeon.model.Monster;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.csd201.dungeon.ds.bst.MonsterBST;
+import com.csd201.dungeon.model.Monster;
 
 public class MonsterBSTTest {
 
@@ -73,4 +76,3 @@ public class MonsterBSTTest {
         assertNull(bst.search(999), "should return null for non-existing large key");
     }
 }
-

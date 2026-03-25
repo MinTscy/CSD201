@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dungeon Crawler Project UI</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">CSD201 Week 10 Capstone</p>
+        <h1>Dungeon Crawler War Room</h1>
+        <p class="subcopy">A polished web UI for the Dungeon Crawler project with live inventory CRUD, BST monster lookup, graph navigation, and a simple playable game flow.</p>
+        <div class="hero-actions">
+          <button data-action="pathExit">Find Exit</button>
+          <button class="secondary" data-action="pathTreasure">Find Treasure</button>
+          <button class="ghost" data-action="inspectMonster">Inspect Encounter</button>
+        </div>
+      </div>
+      <div class="hero-metrics">
+        <div class="metric">
+          <span class="metric-label">Hero</span>
+          <strong id="metricHero">Hero</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Score</span>
+          <strong id="metricScore">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Status</span>
+          <strong id="metricStatus">Exploring</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="card overview-card">
+        <div class="section-head">
+          <h2>Live Overview</h2>
+          <span class="pill">Current run</span>
+        </div>
+        <div class="overview-grid">
+          <article class="stat-panel">
+            <span>Health</span>
+            <strong id="playerHp">100</strong>
+            <small id="playerAtk">ATK 15</small>
+          </article>
+          <article class="stat-panel">
+            <span>Inventory</span>
+            <strong id="inventoryCount">0 items</strong>
+            <small>Linked list managed</small>
+          </article>
+          <article class="stat-panel">
+            <span>Current Room</span>
+            <strong id="roomName">Room</strong>
+            <small id="roomMeta">Standard room</small>
+          </article>
+          <article class="stat-panel">
+            <span>Dungeon</span>
+            <strong id="mapMeta">0 rooms</strong>
+            <small id="monsterMeta">0 monsters</small>
+          </article>
+        </div>
+        <div id="statusBanner" class="status-banner"></div>
+      </section>
+
+      <section class="card encounter-card">
+        <div class="section-head">
+          <h2>Encounter & Game Flow</h2>
+          <span class="pill">Combat + treasure</span>
+        </div>
+        <div id="encounterPanel" class="encounter-panel"></div>
+        <div class="controls wrap">
+          <button data-action="attackMonster">Attack Monster</button>
+          <button class="secondary" data-action="claimTreasure">Claim Treasure</button>
+          <button class="secondary" data-action="usePotion">Use Potion</button>
+        </div>
+        <pre id="monsterOutput" class="detail-box short-box"></pre>
+      </section>
+
+      <section class="card inventory-card">
+        <div class="section-head">
+          <h2>Inventory CRUD</h2>
+          <span class="pill">Create / Read / Update / Delete</span>
+        </div>
+        <div class="controls wrap">
+          <input id="inventorySearch" type="text" placeholder="Find item by name">
+          <button data-action="findInventory">Search</button>
+          <select id="catalogSelect"></select>
+          <button class="secondary" data-action="addCatalogItem">Add Catalog Item</button>
+        </div>
+        <div class="crud-grid">
+          <div class="form-stack">
+            <input id="itemIdField" type="number" placeholder="Item ID">
+            <input id="itemNameField" type="text" placeholder="Item name">
+            <select id="itemTypeField">
+              <option value="POTION">POTION</option>
+              <option value="WEAPON">WEAPON</option>
+              <option value="KEY">KEY</option>
+              <option value="TREASURE">TREASURE</option>
+              <option value="MISC">MISC</option>
+            </select>
+            <input id="itemValueField" type="number" placeholder="Value">
+            <div class="controls">
+              <button data-action="createItem">Create</button>
+              <button class="secondary" data-action="updateItem">Update</button>
+              <button class="ghost" data-action="deleteItem">Delete</button>
+            </div>
+          </div>
+          <div id="inventoryList" class="list-box"></div>
+        </div>
+      </section>
+
+      <section class="card graph-card">
+        <div class="section-head">
+          <h2>Dungeon Graph Explorer</h2>
+          <span class="pill">BFS / DFS / Dijkstra / travel</span>
+        </div>
+        <div class="controls wrap">
+          <select id="targetRoomSelect"></select>
+          <button data-action="moveHero">Travel</button>
+          <button data-action="pathExit">BFS to Exit</button>
+          <button data-action="pathTreasure">BFS to Treasure</button>
+          <button class="secondary" data-action="pathDijkstra">Dijkstra to Target</button>
+          <button class="ghost" data-action="pathDfs">DFS Traverse</button>
+        </div>
+        <div class="graph-layout">
+          <div>
+            <h3>Rooms</h3>
+            <div id="roomList" class="list-box room-list"></div>
+          </div>
+          <div>
+            <h3>Room Details</h3>
+            <pre id="roomDetails" class="detail-box"></pre>
+          </div>
+          <div>
+            <h3>Route Output</h3>
+            <pre id="pathOutput" class="detail-box"></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="card side-card">
+        <div class="section-head">
+          <h2>BST Monster Lookup</h2>
+          <span class="pill">Search by ID</span>
+        </div>
+        <div class="controls">
+          <input id="monsterId" type="number" placeholder="Monster ID">
+          <button data-action="findMonster">Search Monster</button>
+        </div>
+        <pre id="monsterLookupOutput" class="detail-box short-box"></pre>
+      </section>
+
+      <section class="card side-card">
+        <div class="section-head">
+          <h2>Activity Log</h2>
+          <span class="pill">Recent actions</span>
+        </div>
+        <div id="activityLog" class="list-box log-box"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
